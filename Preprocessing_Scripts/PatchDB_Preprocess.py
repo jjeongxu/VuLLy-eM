@@ -1,90 +1,79 @@
 import json
 import re
+import random
+import tiktoken # GPT 3.5 turbo tokenizer
 
-# CWE_ID들 추가해야함
 CWE_MAP = {
-    "16":    "Configuration",
-    "59":    "Improper Link Resolution Before File Access",
-    "90":    "LDAP Injection",
-    "119":   "Buffer Overflow",
-    "125":   "Out-of-bounds Read",
-    "189":   "Numeric Errors",
-    "190":   "Integer Overflow or Wraparound",
-    "200":   "Information Exposure",
-    "264":   "Permissions, Privileges, and Access Control",
-    "310":   "Cryptographic Issues",
-    "399":   "Resource Management Errors",
-    "400":   "Uncontrolled Resource Consumption",
-    "415":   "Double Free",
-    "416":   "Use After Free",
-    "476":   "NULL Pointer Dereference",
-    "787":   "Out-of-bounds Write",
-    "CWE":   ""
+    "120": "Buffer Copy without Checking Size of Input",
+    "121": "Stack-based Buffer Overflow",
+    "122": "Heap-based Buffer Overflow",
+    "123": "Write-what-where Condition",
+    "125": "Out-of-bounds Read",
+    "129": "Improper Validation of Array Index",
+    "134": "Use of Externally-Controlled Format String",
+    "190": "Integer Overflow or Wraparound",
+    "191": "Integer Underflow (Wrap or Wraparound)",
+    "415": "Double Free",
+    "416": "Use After Free",
+    "787": "Out-of-bounds Write",
+    "805": "Buffer Access with Incorrect Length Value",
+    "824": "Access of Uninitialized Pointer"
 }
 
-# unified diff 의 hunk 헤더를 잡아내는 정규식
+# for diff parsing
 HUNK_HEADER_RE = re.compile(r'^@@ -\d+(?:,\d+)? \+\d+(?:,\d+)? @@')
 
-def parse_diff(diff_text):
+try:
+    enc = tiktoken.encoding_for_model("gpt-3.5-turbo")
+except KeyError:
+    enc = tiktoken.get_encoding("cl100k_base")
+
+def parse_diff(diff_text: str):
     """
-    diff_text를 “파일별 섹션”으로 나눈 뒤,
-    - 삭제(-) 행이 단 한 줄이라도 있는 파일만 골라
-    - 그 부분의 “패치 전 코드” (삭제행과 컨텍스트 공백행) 를 모아서 processed_code 생성
-    - 그 processed_code 내에서 삭제행에 해당했던 라인 번호(1-based) 리스트 removed_ranges 생성
+    diff_text를 src code 파일별로 분리 -> 삭제(-) line 존재하는 src code 파일의
+    '패치 전 코드' && 삭제된(diff된) Line 번호 range 구하기.
     """
     lines = diff_text.splitlines()
-    file_hunks = {}     # { filename: [ { 'lines':[], 'flags':[] }, … ] }
+    file_hunks = {}
     cur_file = None
 
     for line in lines:
-        # --- a/... / +++ b/... 에서 파일 이름 추출
+        # 파일 이름 잡기
         if line.startswith('diff --git '):
             parts = line.split()
             if len(parts) >= 4:
-                # parts[2] == "a/path", parts[3] == "b/path"
-                cur_file = parts[2][2:]
+                cur_file = parts[2][2:]     # "a/..." → "..."
                 file_hunks[cur_file] = []
             continue
 
         if cur_file is None:
             continue
 
-        # hunk 시작
+        # hunk 헤더
         if HUNK_HEADER_RE.match(line):
             file_hunks[cur_file].append({'lines': [], 'flags': []})
             continue
 
-        # 아직 hunk를 만나지 못했으면 스킵
         if not file_hunks[cur_file]:
             continue
 
         seg = file_hunks[cur_file][-1]
-        #   +추가 라인  => 패스
+
         if line.startswith('+') and not line.startswith('+++'):
-            continue
-        #   -삭제 라인  => 코드에 추가, flag=True
+            continue # 추가 행 무시
         elif line.startswith('-') and not line.startswith('---'):
             seg['lines'].append(line[1:])
             seg['flags'].append(True)
-        #    공백 라인  => 컨텍스트, flag=False
         elif line.startswith(' '):
             seg['lines'].append(line[1:])
             seg['flags'].append(False)
-        else:
-            # ---+++ 기타 diff 메타라인
-            continue
 
-    # (1) “삭제행이 한 줄 이상 있는 파일”만 골라서 processed_code 빌드
-    processed_lines = []
-    removed_indices = []
-    idx = 0
+    processed_lines, removed_indices, idx = [], [], 0
 
     for fname, hunks in file_hunks.items():
-        # 이 파일에 삭제행이 하나라도 없다면 건너뛰기
         if not any(any(seg['flags']) for seg in hunks):
-            continue
+            continue  # 삭제 행 없는 파일 skip
 
-        # 삭제행이 있는 파일만, 그 코드 섹션 모두를 모아서
         for seg in hunks:
             for flag, txt in zip(seg['flags'], seg['lines']):
                 idx += 1
@@ -94,7 +83,7 @@ def parse_diff(diff_text):
 
     processed_code = "\n".join(processed_lines)
 
-    # (2) removed_indices를 “연속 구간”으로 묶어서 start-end 형식 문자열 리스트로 변환
+    # 삭제 행 range 계산
     removed_ranges = []
     for n in sorted(removed_indices):
         if not removed_ranges or n > removed_ranges[-1][1] + 1:
@@ -109,7 +98,11 @@ def parse_diff(diff_text):
     return processed_code, removed_ranges
 
 def main():
-    in_path, out_path = 'patch_db_secu_only_cves.json', 'patch_db_cves_preprocessed.jsonl'
+    in_path  = 'patch_db_secu_only_cves.json'
+    out_path = 'PatchDB_Processed_Dataset.jsonl'
+
+    i = 0
+    rand_list = random.sample(range(1000, 3601), 800)
 
     with open(in_path, 'r', encoding='utf-8') as fin:
         records = json.load(fin)
@@ -118,17 +111,24 @@ def main():
         for rec in records:
             cve = rec.get("CVE_ID", "")
             cwe = rec.get("CWE_ID", "")
-            cwe_name = CWE_MAP.get(cwe, "")
 
+            ## CWE_MAP에 있는 취약점만 전처리 데이터셋에 저장
+            if cwe not in CWE_MAP:
+                continue
+
+            cwe_name  = CWE_MAP[cwe]
             diff_code = rec.get("diff_code", "")
             proc_code, removed = parse_diff(diff_code)
 
+            token_len = len(enc.encode(proc_code))
+            if token_len < 128 or token_len > 2048:
+                continue
+
             out_obj = {
-                "CVE_ID":               cve,
-                "CWE_ID":               cwe,
-                "CWE_NAME":             cwe_name,
-                "processed_code":       proc_code,
-                "removed_line_numbers": removed
+                "instruction": "Check if the following code has vulnerabilities.",
+                "input": proc_code,
+                "output": "Line number: {}: {}".format(removed, cwe_name),
+                "idx": rand_list.pop()
             }
             fout.write(json.dumps(out_obj, ensure_ascii=False) + "\n")
 
