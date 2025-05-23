@@ -125,7 +125,7 @@ def main():
                 continue
 
             out_obj = {
-                "instruction": "Check if the following code has vulnerabilities.",
+                "instruction": "Check if the following code has vulnerabilities. If there is, tell me the line number and what the vulnerability is.",
                 "input": proc_code,
                 "output": "Line number: {}: {}".format(removed, cwe_name),
                 "idx": rand_list.pop()
