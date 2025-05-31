@@ -1,4 +1,4 @@
-from openai import OpenAIMore actions
+from openai import OpenAI
 import json
 from sklearn.metrics import f1_score, classification_report, accuracy_score
 
