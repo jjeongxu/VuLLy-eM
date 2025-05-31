@@ -1,4 +1,4 @@
-from openai import OpenAI
+from openai import OpenAIMore actions
 import json
 from sklearn.metrics import f1_score, classification_report, accuracy_score
 
@@ -18,25 +18,26 @@ with open("/content/file-test_merged.jsonl", "r") as f:
 
 
 
-def test_model(code):
+def test_model(code, model_name):
     response = client.chat.completions.create(
-    model = "gpt-3.5-turbo",   #fine-tuning model id
-    messages = [
-        {"role": "system", "content": "Returns 1 if your code has a vulnerability,  0 if it is secure."},
-        {"role": "user", "content": "Check if the following code has vulnerabilities.\n{code}"}
-      ]
+        model=model_name,
+        temperature=0,
+        messages=[
+            {"role": "system",
+             "content": "You are a vulnerability detection model. Output 1 for vulnerable, 0 for safe."},
+            {"role": "user",
+             "content": f"Check if the following code has vulnerabilities.\n```c\n{code}\n```\nReturn only 1 or 0."}
+        ]
     )
-
-    answer = response.choices[0].message.content
-    return answer
+    return response.choices[0].message.content.strip()
 
 y_true = []         # 실제값
 y_prediction = []   # 예측값
 
 for item in test_dataset:
     y_true.append(item["label"])
-    prediction = test_model(item["input"])
-    prediction = "1" if "1" in prediction else "0"  # 정규화
+    prediction_text = test_model(item["input"], "gpt-3.5-turbo")  # plain
+    prediction = "1" if prediction_text.startswith("1") else "0"
     y_prediction.append(prediction)
 
 print("F1 Score: ", f1_score(y_true, y_prediction, pos_label = "1"))
