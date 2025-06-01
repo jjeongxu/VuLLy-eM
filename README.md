@@ -9,7 +9,4 @@ CleanVul and PatchDB were used as the train dataset. However, PatchDB cannot be 
 ```
 
 #### [Todo]
-1. Fine-tuning 진행
-2. Validation set 준비(probably from CVE-Fixes..?)
-3. Evaluation 진행(F1 score)
-4. 발표자료 준비
+1. 매뉴얼 작성
