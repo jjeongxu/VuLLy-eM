@@ -22,23 +22,30 @@ CleanVul and PatchDB were used as the train dataset. However, PatchDB cannot be 
 
    -> **Initial credit purchase** 에 $20, 나머지는 설정값 크게 상관 없음 (이후 창에서는 Continue 하면 다시 결제 될 것 같아 Continue를 눌러보지 못했습니다. 이러한 방식으로 결제 하셔서 금액 충전하시면 됩니다)
 
-   ![image-20250607210118317](C:\Users\jeongsu\AppData\Roaming\Typora\typora-user-images\image-20250607210118317.png)
+   ![image-20250607210118317](https://github.com/user-attachments/assets/3d982f39-e41f-4040-90f3-09b8630c9167)
 
-![image-20250607210419006](C:\Users\jeongsu\AppData\Roaming\Typora\typora-user-images\image-20250607210419006.png)
 
-![image-20250607210339711](C:\Users\jeongsu\AppData\Roaming\Typora\typora-user-images\image-20250607210339711.png)
+![image-20250607210419006](https://github.com/user-attachments/assets/22ad5470-21a4-47eb-a1be-31b0b4ad9521)
 
-2. https://platform.openai.com/finetune 에 접속하여 좌측 "DASHBOARD에서 API KEYS 선택"![image-20250607204018683](C:\Users\jeongsu\AppData\Roaming\Typora\typora-user-images\image-20250607204018683.png)
+
+![image-20250607210339711](https://github.com/user-attachments/assets/012bfb47-2505-46b6-853a-7fbc52adb13f)
+
+
+2. https://platform.openai.com/finetune 에 접속하여 좌측 "DASHBOARD에서 API KEYS 선택"![image-20250607204018683](https://github.com/user-attachments/assets/1288eb24-6b35-4768-8606-c96c7e7525c5)
+
 
 3. 우측 상단 **"Create new secret key"** 선택 후,  **Name**에 이름 입력, 나머지는 기본 설정으로 두고 **"Create secret key"** 클릭(API secret key는 발급 받은 이후 다시 확인 불가능하므로 따로 메모해두기)
 
-![image-20250607204119949](C:\Users\jeongsu\AppData\Roaming\Typora\typora-user-images\image-20250607204119949.png)
+![image-20250607204119949](https://github.com/user-attachments/assets/0968fe73-5cb5-447f-9768-15b29ec16212)
 
-![image-20250607204135259](C:\Users\jeongsu\AppData\Roaming\Typora\typora-user-images\image-20250607204135259.png)
+
+![image-20250607204135259](https://github.com/user-attachments/assets/291dd590-91fc-4cdf-aba9-c1749272c135)
+
 
 4. 좌측 **"DASHBOARD"**에서 **"Fine-tuning"** 선택. 우측 상단 **"+ Create 클릭"**
 
-![image-20250607204448223](C:\Users\jeongsu\AppData\Roaming\Typora\typora-user-images\image-20250607204448223.png)
+![image-20250607204448223](https://github.com/user-attachments/assets/7ecdab13-4cef-4639-b356-b8874b2a3f93)
+
 
 
 
@@ -58,9 +65,11 @@ CleanVul and PatchDB were used as the train dataset. However, PatchDB cannot be 
 
 ​	우측 아래 **"Create"** 클릭
 
-![image-20250607204813062](C:\Users\jeongsu\AppData\Roaming\Typora\typora-user-images\image-20250607204813062.png)
+![image-20250607204813062](https://github.com/user-attachments/assets/1c7a885d-149a-42f5-899a-4ea0d22489bb)
 
-![image-20250607204833578](C:\Users\jeongsu\AppData\Roaming\Typora\typora-user-images\image-20250607204833578.png)
+
+![image-20250607204833578](https://github.com/user-attachments/assets/3df4d9b6-d49c-4b8c-89e5-363286163355)
+
 
 5. Fine-tuning이 완료되면 테스트셋(https://github.com/jjeongxu/VuLLy-eM/blob/main/Evaluation/converted_test_dataset.jsonl) 저장
 
@@ -87,7 +96,8 @@ CleanVul and PatchDB were used as the train dataset. However, PatchDB cannot be 
 
    
 
-   ![image-20250607205319104](C:\Users\jeongsu\AppData\Roaming\Typora\typora-user-images\image-20250607205319104.png)
+   ![image-20250607205319104](https://github.com/user-attachments/assets/bd9876da-0961-4182-9818-724fd584a920)
+
 
 ​	7. 이후 Evaluation.py 스크립트 실행하여 평가 진행
 
