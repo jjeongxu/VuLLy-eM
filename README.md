@@ -31,10 +31,11 @@ CleanVul and PatchDB were used as the train dataset. However, PatchDB cannot be 
 ![image-20250607210339711](https://github.com/user-attachments/assets/012bfb47-2505-46b6-853a-7fbc52adb13f)
 
 
-2. https://platform.openai.com/finetune 에 접속하여 좌측 "DASHBOARD에서 API KEYS 선택"![image-20250607204018683](https://github.com/user-attachments/assets/1288eb24-6b35-4768-8606-c96c7e7525c5)
+2. https://platform.openai.com/finetune 에 접속하여 좌측 "DASHBOARD에서 API KEYS 선택"
+   ![image-20250607204018683](https://github.com/user-attachments/assets/1288eb24-6b35-4768-8606-c96c7e7525c5)
 
 
-3. 우측 상단 **"Create new secret key"** 선택 후,  **Name**에 이름 입력, 나머지는 기본 설정으로 두고 **"Create secret key"** 클릭(API secret key는 발급 받은 이후 다시 확인 불가능하므로 따로 메모해두기)
+4. 우측 상단 **"Create new secret key"** 선택 후,  **Name**에 이름 입력, 나머지는 기본 설정으로 두고 **"Create secret key"** 클릭(API secret key는 발급 받은 이후 다시 확인 불가능하므로 따로 메모해두기)
 
 ![image-20250607204119949](https://github.com/user-attachments/assets/0968fe73-5cb5-447f-9768-15b29ec16212)
 
