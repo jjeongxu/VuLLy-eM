@@ -32,10 +32,11 @@ CleanVul and PatchDB were used as the train dataset. However, PatchDB cannot be 
 
 
 2. https://platform.openai.com/finetune 에 접속하여 좌측 "DASHBOARD에서 API KEYS 선택"
-   ![image-20250607204018683](https://github.com/user-attachments/assets/1288eb24-6b35-4768-8606-c96c7e7525c5)
+
+![image-20250607204018683](https://github.com/user-attachments/assets/1288eb24-6b35-4768-8606-c96c7e7525c5)
 
 
-4. 우측 상단 **"Create new secret key"** 선택 후,  **Name**에 이름 입력, 나머지는 기본 설정으로 두고 **"Create secret key"** 클릭(API secret key는 발급 받은 이후 다시 확인 불가능하므로 따로 메모해두기)
+3. 우측 상단 **"Create new secret key"** 선택 후,  **Name**에 이름 입력, 나머지는 기본 설정으로 두고 **"Create secret key"** 클릭(API secret key는 발급 받은 이후 다시 확인 불가능하므로 따로 메모해두기)
 
 ![image-20250607204119949](https://github.com/user-attachments/assets/0968fe73-5cb5-447f-9768-15b29ec16212)
 
@@ -72,9 +73,9 @@ CleanVul and PatchDB were used as the train dataset. However, PatchDB cannot be 
 ![image-20250607204833578](https://github.com/user-attachments/assets/3df4d9b6-d49c-4b8c-89e5-363286163355)
 
 
-5. Fine-tuning이 완료되면 테스트셋(https://github.com/jjeongxu/VuLLy-eM/blob/main/Evaluation/converted_test_dataset.jsonl) 저장
+6. Fine-tuning이 완료되면 테스트셋(https://github.com/jjeongxu/VuLLy-eM/blob/main/Evaluation/converted_test_dataset.jsonl) 저장
 
-6. Evaluation.py(https://github.com/jjeongxu/VuLLy-eM/blob/main/Evaluation/Evaluation.py)의  Line 9의 **"API-Key"**에 
+7. Evaluation.py(https://github.com/jjeongxu/VuLLy-eM/blob/main/Evaluation/Evaluation.py)의  Line 9의 **"API-Key"**에 
 
    ```
    client = OpenAI(api_key="API-Key")
@@ -91,7 +92,7 @@ CleanVul and PatchDB were used as the train dataset. However, PatchDB cannot be 
    FT_MODEL    = "Fine-tuned Model ID"                              # Fine-tuned Model ID
    ```
 
-   **DATA_PATH**에 Step5에서 다운로드 받은 테스트셋 경로 입력
+   **DATA_PATH**에 Step6에서 다운로드 받은 테스트셋 경로 입력
 
    **FT_MODEL**에 Fine-tune된 **Output model**(아래 사진 참고) 복사해서 입력
 
@@ -100,7 +101,7 @@ CleanVul and PatchDB were used as the train dataset. However, PatchDB cannot be 
    ![image-20250607205319104](https://github.com/user-attachments/assets/bd9876da-0961-4182-9818-724fd584a920)
 
 
-​	7. 이후 Evaluation.py 스크립트 실행하여 평가 진행
+​	8. 이후 Evaluation.py 스크립트 실행하여 평가 진행
 
 
 
